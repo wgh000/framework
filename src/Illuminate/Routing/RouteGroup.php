@@ -86,10 +86,34 @@ class RouteGroup
      */
     protected static function formatAs($new, $old)
     {
+        $new = static::formatName($new, $old);
+        
         if (isset($old['as'])) {
             $new['as'] = $old['as'].($new['as'] ?? '');
         }
 
         return $new;
+    }
+    
+     /**
+     * Format the "name" clause of the new group attributes.
+     * Temporary while deprecating 'as'.
+     *
+     * @param  array  $new
+     * @param  array  $old
+     * @return array
+     */
+    protected static function formatName($new, $old) 
+    {
+        if (!isset($new['name'])) {
+            return $new;
+        }
+        
+        if (!isset($new['as'])) {
+            $new['as'] = $new['name'];
+            return $new;
+        }
+        
+        throw new InvalidArgumentException("Only one attribute between 'name' and 'as' can be used.");
     }
 }
